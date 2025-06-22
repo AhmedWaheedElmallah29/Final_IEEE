@@ -62,6 +62,12 @@ export default function LogIn() {
               </p>
             </div>
           )}
+          <a
+            href="/"
+            className="text-blue-600 text-lg font-medium hover:underline hover:text-blue-800 transition duration-200"
+          >
+            Create New Account
+          </a>
 
           <button
             type="submit"
