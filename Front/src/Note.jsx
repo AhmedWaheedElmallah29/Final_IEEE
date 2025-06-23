@@ -25,7 +25,7 @@ export default function Note() {
   }
 
   return (
-    <div className="bg-[linear-gradient(to_left,_#ffefd5,_#87cefa)] min-h-screen font-[cursive]">
+    <div className="bg-gradient-to-l from-yellow-100 to-blue-100 min-h-screen font-[cursive]">
       <div className="flex justify-end p-2">
         <LogoutBtn />
       </div>
@@ -40,7 +40,7 @@ export default function Note() {
         <NewNote arr={arr} onDelete={deleteNote} onEdit={editNote} />
         <button
           onClick={addToArray}
-          className="h-[200px] border-none rounded-[10%] text-[70px] font-bold text-[#4b0082] cursor-pointer bg-[#ffd700] transition-all duration-300 ease-[ease] hover:bg-[#ff6347] hover:text-[aliceblue] hover:scale-110"
+          className="h-[200px] border-none rounded-[10%] text-[70px] font-bold text-indigo-700 cursor-pointer bg-yellow-200 transition-all duration-300 ease-in-out hover:bg-yellow-300 hover:text-white hover:scale-110  "
         >
           +
         </button>
@@ -55,7 +55,7 @@ function NewNote({ arr, onDelete, onEdit }) {
       {arr.map((e) => (
         <div
           key={e.id}
-          className="relative w-[300px] h-[200px] bg-white/70 p-[17px] rounded-[15px] shadow-[0_0_3px_rgba(0,_0,_0,_0.3)]"
+          className="relative w-[300px] h-[200px] bg-white/90 p-[17px] rounded-[15px] shadow-md"
         >
           <textarea
             onChange={(ev) => onEdit(e.id, ev.target.value)}
@@ -73,3 +73,4 @@ function NewNote({ arr, onDelete, onEdit }) {
     </>
   );
 }
+// bg-[linear-gradient(to_left,_#ffefd5,_#87cefa)]

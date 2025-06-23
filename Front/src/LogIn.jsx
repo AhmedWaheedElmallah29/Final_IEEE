@@ -15,8 +15,11 @@ export default function LogIn() {
     setPass("");
   };
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 ">
-      <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
+    <div
+      className="min-h-screen flex items-center justify-center bg-[#f0f3da]
+ "
+    >
+      <div className="bg-white/40 p-8 rounded-2xl shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
           Login
         </h2>
@@ -41,7 +44,7 @@ export default function LogIn() {
           {err && (
             <div
               role="alert"
-              className="bg-red-100 dark:bg-red-900 border-l-4 border-red-500 dark:border-red-700 text-red-900 dark:text-red-100 p-2 rounded-lg flex items-center transition duration-300 ease-in-out hover:bg-red-200 dark:hover:bg-red-800 transform hover:scale-105"
+              className="bg-red-100 border-l-4 border-red-500 text-red-700 p-2 rounded-lg flex items-center transition duration-300 ease-in-out hover:bg-red-200"
             >
               <svg
                 stroke="currentColor"
@@ -71,7 +74,7 @@ export default function LogIn() {
 
           <button
             type="submit"
-            className=" cursor-pointer bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition duration-300"
+            className=" cursor-pointer bg-indigo-700 text-white py-3 rounded-xl font-semibold hover:bg-indigo-800 transition duration-300"
           >
             Login
           </button>
@@ -80,3 +83,4 @@ export default function LogIn() {
     </div>
   );
 }
+// bg-gradient-to-br from-indigo-500 to-purple-600
