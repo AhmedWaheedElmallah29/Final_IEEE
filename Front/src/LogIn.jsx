@@ -1,21 +1,28 @@
 import { useState } from "react";
-// import Note from "./Note";
-import { useNavigate } from "react-router-dom";
+import usersApi from "./api/usersApi";
 
 export default function LogIn() {
-  const [userName, setUserName] = useState("");
-  const [pass, setPass] = useState("");
-  const navigate = useNavigate();
+  const [data, setData] = useState({
+    username: "",
+    password: "",
+  });
   const [err, setErr] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    userName === "ahmed" && pass === "123" ? navigate("/Note") : setErr(true);
-    setUserName("");
-    setPass("");
+    try {
+      const { data: user } = await usersApi.creatUser(data);
+      console.log(user);
+    } catch (err) {
+      if (err.respose && err.respose.status >= 400 && err.respose.status < 500)
+        alert(err.respose.data);
+    }
   };
+  const handleChange = ({ target }) =>
+    setData({ ...data, [target.name]: target.value });
   return (
     <div
+      // import Note from "./Note";
       className="min-h-screen flex items-center justify-center bg-[#f0f3da]
  "
     >
@@ -28,16 +35,16 @@ export default function LogIn() {
           <input
             onFocus={() => setErr(false)}
             type="text"
-            onChange={(e) => setUserName(e.target.value)}
-            value={userName}
+            onChange={handleChange}
             placeholder="Email"
+            htmlFor="username"
             className="p-3 rounded-xl  border-gray-300 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
           <input
             onFocus={() => setErr(false)}
-            value={pass}
-            onChange={(e) => setPass(e.target.value)}
+            onChange={handleChange}
             type="password"
+            htmlFor="password"
             placeholder="Password"
             className="p-3 rounded-xl border-solid border-gray-300 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />

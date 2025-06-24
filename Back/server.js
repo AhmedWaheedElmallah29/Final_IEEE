@@ -1,11 +1,16 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-// mangoose
-//   .connect(
-//     "mongodb+srv://ahmedwaheedelmallah2:66lRKTrkakQxI3XL@ieee.xkbhtzt.mongodb.net/IEE?retryWrites=true&w=majority&appName=IEEE"
-//   )
-//   .cath((err) => console.log(err));
+mongoose
+  .connect(
+    "mongodb+srv://ahmedwaheedelmallah2:66lRKTrkakQxI3XL@ieee.xkbhtzt.mongodb.net/IEE?retryWrites=true&w=majority&appName=IEEE"
+  )
+  .catch((err) => console.log(err));
+
+app.use(require("cors")());
+app.use(express.json());
+require("./routes")(app);
+
 app.listen(5000, () => {
   console.log("ahmed");
 });
