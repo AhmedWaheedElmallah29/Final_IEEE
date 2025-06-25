@@ -8,10 +8,7 @@ router.post("/", async (req, res) => {
   if (user) return res.status(400).send("Username already taken");
   user = new User({ username, password });
   await user.save();
-  return res.send({
-    user,
-    "x-auth-toked": user.genAuthToken(),
-  });
+  return res.send(user.genAuthToken());
 });
 
 module.exports = router;

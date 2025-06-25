@@ -11,7 +11,5 @@ app.use(require("cors")());
 app.use(express.json());
 require("./routes")(app);
 
-app.listen(5000, () => {
-  console.log("ahmed");
-});
+app.listen(5000);
 // mongodb+srv://ahmedwaheedelmallah2:66lRKTrkakQxI3XL@ieee.xkbhtzt.mongodb.net/?retryWrites=true&w=majority&appName=IEEE

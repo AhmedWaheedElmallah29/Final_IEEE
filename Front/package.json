@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.10",
+    "jwt-decode": "^4.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.6.2",
+    "react-toastify": "^11.0.5",
     "styled-components": "^6.1.19",
     "tailwindcss": "^4.1.10"
   },

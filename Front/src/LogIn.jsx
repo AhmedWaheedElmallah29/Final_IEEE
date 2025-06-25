@@ -1,5 +1,7 @@
 import { useState } from "react";
 import usersApi from "./api/usersApi";
+import { toast } from "react-toastify";
+import authApi from "./api/auth";
 
 export default function LogIn() {
   const [data, setData] = useState({
@@ -11,18 +13,22 @@ export default function LogIn() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const { data: user } = await usersApi.creatUser(data);
-      console.log(user);
+      const { data: token } = await usersApi.createUser(data);
+      authApi.setToken(token);
+      window.location = "/";
     } catch (err) {
-      if (err.respose && err.respose.status >= 400 && err.respose.status < 500)
-        alert(err.respose.data);
+      if (
+        err.response &&
+        err.response.status >= 400 &&
+        err.response.status < 500
+      )
+        toast.error(err.response.data);
     }
   };
   const handleChange = ({ target }) =>
     setData({ ...data, [target.name]: target.value });
   return (
     <div
-      // import Note from "./Note";
       className="min-h-screen flex items-center justify-center bg-[#f0f3da]
  "
     >
@@ -33,18 +39,18 @@ export default function LogIn() {
 
         <form className="flex flex-col space-y-4" onSubmit={handleLogin}>
           <input
+            name="username"
             onFocus={() => setErr(false)}
             type="text"
             onChange={handleChange}
-            placeholder="Email"
-            htmlFor="username"
+            placeholder="Username"
             className="p-3 rounded-xl  border-gray-300 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
           <input
             onFocus={() => setErr(false)}
             onChange={handleChange}
             type="password"
-            htmlFor="password"
+            name="password"
             placeholder="Password"
             className="p-3 rounded-xl border-solid border-gray-300 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
