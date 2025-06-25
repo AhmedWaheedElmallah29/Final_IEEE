@@ -1,7 +1,11 @@
 import { useState } from "react";
+<<<<<<< HEAD
 import usersApi from "./api/usersApi";
 import { toast } from "react-toastify";
 import authApi from "./api/auth";
+=======
+import { useNavigate } from "react-router-dom";
+>>>>>>> ade1979c57ce6e95dd46a5d3154a6f0835da11dd
 
 export default function LogIn() {
   const [data, setData] = useState({
@@ -12,6 +16,7 @@ export default function LogIn() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+<<<<<<< HEAD
     try {
       const { data: token } = await usersApi.createUser(data);
       authApi.setToken(token);
@@ -27,6 +32,26 @@ export default function LogIn() {
   };
   const handleChange = ({ target }) =>
     setData({ ...data, [target.name]: target.value });
+=======
+    setErr(false);
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: userName, password: pass }),
+      });
+      if (!res.ok) throw new Error("Login failed");
+      const data = await res.json();
+      localStorage.setItem("token", data.token);
+      navigate("/Note");
+    } catch {
+      setErr(true);
+    }
+    setUserName("");
+    setPass("");
+  };
+
+>>>>>>> ade1979c57ce6e95dd46a5d3154a6f0835da11dd
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-[#f0f3da]
@@ -79,7 +104,7 @@ export default function LogIn() {
             </div>
           )}
           <a
-            href="/"
+            href="/Signup"
             className="text-blue-600 text-lg font-medium hover:underline hover:text-blue-800 transition duration-200"
           >
             Create New Account

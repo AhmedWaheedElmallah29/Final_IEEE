@@ -1,10 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import authApi from "../api/auth"; // import this
 
 export default function LogoutBtn() {
   const navigate = useNavigate();
   function handleClick() {
+    authApi.deleteToken(); // remove token
     navigate("/");
   }
   return (
