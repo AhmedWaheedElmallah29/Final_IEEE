@@ -1,11 +1,6 @@
 import { useState } from "react";
-<<<<<<< HEAD
-import usersApi from "./api/usersApi";
-import { toast } from "react-toastify";
-import authApi from "./api/auth";
-=======
 import { useNavigate } from "react-router-dom";
->>>>>>> ade1979c57ce6e95dd46a5d3154a6f0835da11dd
+import { jwtDecode } from "jwt-decode";
 
 export default function LogIn() {
   const [data, setData] = useState({
@@ -13,69 +8,52 @@ export default function LogIn() {
     password: "",
   });
   const [err, setErr] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-<<<<<<< HEAD
-    try {
-      const { data: token } = await usersApi.createUser(data);
-      authApi.setToken(token);
-      window.location = "/";
-    } catch (err) {
-      if (
-        err.response &&
-        err.response.status >= 400 &&
-        err.response.status < 500
-      )
-        toast.error(err.response.data);
-    }
-  };
-  const handleChange = ({ target }) =>
-    setData({ ...data, [target.name]: target.value });
-=======
     setErr(false);
     try {
       const res = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: userName, password: pass }),
+        body: JSON.stringify(data),
       });
       if (!res.ok) throw new Error("Login failed");
-      const data = await res.json();
-      localStorage.setItem("token", data.token);
+      const result = await res.json();
+      localStorage.setItem("token", result.token);
       navigate("/Note");
     } catch {
       setErr(true);
     }
-    setUserName("");
-    setPass("");
+    setData({ username: "", password: "" });
   };
 
->>>>>>> ade1979c57ce6e95dd46a5d3154a6f0835da11dd
+  const handleChange = ({ target }) =>
+    setData({ ...data, [target.name]: target.value });
+
   return (
-    <div
-      className="min-h-screen flex items-center justify-center bg-[#f0f3da]
- "
-    >
+    <div className="min-h-screen flex items-center justify-center bg-[#f0f3da]">
       <div className="bg-white/40 p-8 rounded-2xl shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
           Login
         </h2>
-
         <form className="flex flex-col space-y-4" onSubmit={handleLogin}>
           <input
             name="username"
             onFocus={() => setErr(false)}
             type="text"
             onChange={handleChange}
+            value={data.username}
             placeholder="Username"
-            className="p-3 rounded-xl  border-gray-300 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="p-3 rounded-xl border-gray-300 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
           <input
             onFocus={() => setErr(false)}
             onChange={handleChange}
             type="password"
             name="password"
+            value={data.password}
             placeholder="Password"
             className="p-3 rounded-xl border-solid border-gray-300 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
@@ -109,10 +87,9 @@ export default function LogIn() {
           >
             Create New Account
           </a>
-
           <button
             type="submit"
-            className=" cursor-pointer bg-indigo-700 text-white py-3 rounded-xl font-semibold hover:bg-indigo-800 transition duration-300"
+            className="cursor-pointer bg-indigo-700 text-white py-3 rounded-xl font-semibold hover:bg-indigo-800 transition duration-300"
           >
             Login
           </button>
