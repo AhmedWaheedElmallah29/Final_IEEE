@@ -1,21 +1,61 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
+  const [userName, setUserName] = useState("");
+  const [pass, setPass] = useState("");
+  const [err, setErr] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    setErr(false);
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: userName, password: pass }),
+      });
+      if (!res.ok) throw new Error("Signup failed");
+      navigate("/");
+    } catch {
+      setErr(true);
+    }
+  };
+
   return (
     <StyledWrapper>
       <div className="form-box">
-        <form className="form">
+        <form className="form" onSubmit={handleSignUp}>
           <span className="title">Sign up</span>
           <span className="subtitle">
             Create a free account with your email.
           </span>
           <div className="form-container">
-            <input type="text" className="input" placeholder="Full Name" />
-            <input type="email" className="input" placeholder="Email" />
-            <input type="password" className="input" placeholder="Password" />
+            <input
+              type="text"
+              className="input"
+              placeholder="Username"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              className="input"
+              placeholder="Password"
+              value={pass}
+              onChange={(e) => setPass(e.target.value)}
+              required
+            />
           </div>
-          <button>Sign up</button>
+          {err && (
+            <div style={{ color: "red", fontSize: "0.9em" }}>
+              Signup failed. Try another username.
+            </div>
+          )}
+          <button type="submit">Sign up</button>
         </form>
         <div className="form-section">
           <p>

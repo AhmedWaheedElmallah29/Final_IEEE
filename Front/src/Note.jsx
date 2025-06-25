@@ -1,27 +1,91 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LogoutBtn from "./components/LogoutBtn";
 import Delete from "./components/Delete";
 
 export default function Note() {
   const [text, setText] = useState("");
   const [arr, setArr] = useState([]);
-  function addToArray() {
-    const newNote = {
-      id: Date.now(),
-      text,
+  const [loading, setLoading] = useState(true);
+
+  // Fetch notes on mount
+  useEffect(() => {
+    const fetchNotes = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      try {
+        const res = await fetch("http://localhost:5000/api/notes", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!res.ok) throw new Error("Failed to fetch notes");
+        const data = await res.json();
+        setArr(data);
+      } catch (err) {
+        setArr([]);
+      } finally {
+        setLoading(false);
+      }
     };
-    setArr([...arr, newNote]);
+    fetchNotes();
+  }, []);
+
+  // Add a new note
+  async function addToArray() {
+    const token = localStorage.getItem("token");
+    try {
+      const res = await fetch("http://localhost:5000/api/notes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ title: "Note", content: text }),
+      });
+      if (!res.ok) throw new Error("Failed to add note");
+      const newNote = await res.json();
+      setArr([...arr, newNote]);
+      setText("");
+    } catch (err) {
+      alert("Error adding note");
+    }
   }
 
-  function deleteNote(id) {
-    setArr(arr.filter((e) => e.id !== id));
+  // Delete a note
+  async function deleteNote(id) {
+    const token = localStorage.getItem("token");
+    try {
+      const res = await fetch(`http://localhost:5000/api/notes/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!res.ok) throw new Error("Failed to delete note");
+      setArr(arr.filter((e) => e._id !== id));
+    } catch (err) {
+      alert("Error deleting note");
+    }
   }
 
-  function editNote(id, newText) {
-    setArr(
-      arr.map((note) => (note.id === id ? { ...note, text: newText } : note))
-    );
-    setText(arr[id]);
+  // Auto-save note content
+  async function editNote(id, newText) {
+    const token = localStorage.getItem("token");
+    try {
+      const res = await fetch(`http://localhost:5000/api/notes/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ content: newText }),
+      });
+      if (!res.ok) throw new Error("Failed to update note");
+      const updatedNote = await res.json();
+      setArr(arr.map((note) => (note._id === id ? updatedNote : note)));
+    } catch (err) {
+      alert("Error updating note");
+    }
   }
 
   return (
@@ -35,15 +99,26 @@ export default function Note() {
       <p className="text-center text-[#4b0082] text-[18px]">
         Double click on a note to remove it
       </p>
-
-      <div className="grid grid-cols-[repeat(auto-fill,_300px)] gap-[40px] justify-center p-[50px]">
-        <NewNote arr={arr} onDelete={deleteNote} onEdit={editNote} />
+      <div className="flex justify-center mt-6">
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Write a new note..."
+          className="w-[300px] h-[80px] p-2 rounded-lg border border-gray-300 resize-none"
+        />
         <button
           onClick={addToArray}
-          className="h-[200px] border-none rounded-[10%] text-[70px] font-bold text-indigo-700 cursor-pointer bg-yellow-200 transition-all duration-300 ease-in-out hover:bg-yellow-300 hover:text-white hover:scale-110  "
+          className="ml-2 px-4 py-2 bg-yellow-400 rounded-lg font-bold text-indigo-700 hover:bg-yellow-500"
         >
-          +
+          Add
         </button>
+      </div>
+      <div className="grid grid-cols-[repeat(auto-fill,_300px)] gap-[40px] justify-center p-[50px]">
+        {loading ? (
+          <div>Loading...</div>
+        ) : (
+          <NewNote arr={arr} onDelete={deleteNote} onEdit={editNote} />
+        )}
       </div>
     </div>
   );
@@ -54,11 +129,12 @@ function NewNote({ arr, onDelete, onEdit }) {
     <>
       {arr.map((e) => (
         <div
-          key={e.id}
+          key={e._id}
           className="relative w-[300px] h-[200px] bg-white/90 p-[17px] rounded-[15px] shadow-md"
         >
           <textarea
-            onChange={(ev) => onEdit(e.id, ev.target.value)}
+            value={e.content}
+            onChange={(ev) => onEdit(e._id, ev.target.value)}
             cols={30}
             rows={10}
             placeholder="Empty Note"
@@ -66,7 +142,7 @@ function NewNote({ arr, onDelete, onEdit }) {
             placeholder:text-[#808080] placeholder:opacity-500"
           ></textarea>
           <div className="absolute bottom-2 right-2">
-            <Delete onClick={() => onDelete(e.id)} />
+            <Delete onClick={() => onDelete(e._id)} />
           </div>
         </div>
       ))}

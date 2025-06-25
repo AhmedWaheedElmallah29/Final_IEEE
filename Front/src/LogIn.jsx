@@ -1,5 +1,4 @@
 import { useState } from "react";
-// import Note from "./Note";
 import { useNavigate } from "react-router-dom";
 
 export default function LogIn() {
@@ -8,12 +7,26 @@ export default function LogIn() {
   const navigate = useNavigate();
   const [err, setErr] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    userName === "ahmed" && pass === "123" ? navigate("/Note") : setErr(true);
+    setErr(false);
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: userName, password: pass }),
+      });
+      if (!res.ok) throw new Error("Login failed");
+      const data = await res.json();
+      localStorage.setItem("token", data.token);
+      navigate("/Note");
+    } catch {
+      setErr(true);
+    }
     setUserName("");
     setPass("");
   };
+
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-[#f0f3da]
@@ -66,7 +79,7 @@ export default function LogIn() {
             </div>
           )}
           <a
-            href="/"
+            href="/Signup"
             className="text-blue-600 text-lg font-medium hover:underline hover:text-blue-800 transition duration-200"
           >
             Create New Account
